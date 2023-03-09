@@ -13,10 +13,12 @@ import (
 	"syscall"
 	"time"
 
+	"nginx-log-collector/config"
+	"nginx-log-collector/geodb"
+	"nginx-log-collector/service"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"nginx-log-collector/config"
-	"nginx-log-collector/service"
 	"gopkg.in/alexcesaro/statsd.v2"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"gopkg.in/yaml.v2"
@@ -126,6 +128,11 @@ func main() {
 				http.ListenAndServe(cfg.PProf.Addr, nil),
 			).Msg("pprof server error")
 		}()
+	}
+
+	if cfg.Geo.Enabled {
+		logger.Info().Msg("loading geo database")
+		geodb.InitGeoDB(cfg.Geo.CityDatabase, cfg.Geo.ASNDatabase, logger)
 	}
 
 	s.Start(done)

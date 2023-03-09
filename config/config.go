@@ -15,8 +15,8 @@ type CollectedLog struct {
 	AllowErrorRatio int    `yaml:"allow_error_ratio"`
 	BufferSize      int    `yaml:"buffer_size"`
 
-	Transformers   functions.FunctionSignatureMap `yaml:"transformers"`
-	Upload         Upload                         `yaml:"upload"`
+	Transformers functions.FunctionSignatureMap `yaml:"transformers"`
+	Upload       Upload                         `yaml:"upload"`
 
 	Audit bool `yaml:"audit"` // debug feature
 }
@@ -55,6 +55,12 @@ type Upload struct {
 	DSN   string `yaml:"dsn"`
 }
 
+type Geo struct {
+	Enabled      bool   `yaml:"enabled"`
+	CityDatabase string `yaml:"city"`
+	ASNDatabase  string `yaml:"asn"`
+}
+
 type Config struct {
 	Backlog       Backlog        `yaml:"backlog"`
 	CollectedLogs []CollectedLog `yaml:"collected_logs"`
@@ -65,4 +71,5 @@ type Config struct {
 	TCPReceiver   TCPReceiver    `yaml:"tcpReceiver"`
 	Statsd        Statsd         `yaml:"statsd"`
 	GoMaxProcs    int            `yaml:"gomaxprocs"`
+	Geo           Geo            `yaml:"geo"`
 }

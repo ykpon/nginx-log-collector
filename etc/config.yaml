@@ -20,11 +20,16 @@ pprof:
 backlog:
   dir: /var/lib/nginx-log-collector/backlog/
 
+geo:
+  enabled: true
+  city: ./etc/geodata/GeoLite2-City.mmdb
+  asn: ./etc/geodata/GeoLite2-ASN.mmdb
+
 collected_logs:
   - tag: "nginx:"
     format: access  # access | error
     buffer_size: 104857600
-    transformers:  # possible functions: ipToUint32 | limitMaxLength(int) | toArray | splitAndStore
+    transformers:  # possible functions: ipToUint32 | limitMaxLength(int) | toArray | splitAndStore | geo
       http_x_real_ip:
         ipToUint32:
       upstream_response_time:
@@ -37,6 +42,15 @@ collected_logs:
           store_to:
             request_uri: 0
             request_args: 1
+      remote_addr:
+        geo:
+          store_to:
+            lat: 0
+            long: 1
+            country_name: 2
+            country_code: 3
+            asn_id: 4
+            asn_name: 5
     upload:
       table: nginx.access_log
       dsn: http://localhost:8123/

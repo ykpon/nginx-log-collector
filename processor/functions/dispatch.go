@@ -2,6 +2,7 @@ package functions
 
 import (
 	"fmt"
+
 	"gopkg.in/yaml.v2"
 )
 
@@ -33,6 +34,8 @@ func Dispatch(signature FunctionSignature) (Callable, error) {
 		callable, err = validateToArray(functionExtra)
 	} else if functionName == "calculateSHA1" {
 		callable, err = validateCalculateSHA1(functionExtra)
+	} else if functionName == "geo" {
+		callable, err = validateGeo(functionExtra)
 	} else {
 		err = fmt.Errorf("unknown function name: %s", functionName)
 	}
@@ -108,6 +111,18 @@ func validateToArray(data interface{}) (*toArray, error) {
 
 func validateCalculateSHA1(data interface{}) (*calculateSHA1, error) {
 	var result calculateSHA1
+
+	if out, err := yaml.Marshal(data); err != nil {
+		return nil, err
+	} else if err := yaml.Unmarshal(out, &result); err != nil {
+		return nil, err
+	} else {
+		return &result, nil
+	}
+}
+
+func validateGeo(data interface{}) (*geo, error) {
+	var result geo
 
 	if out, err := yaml.Marshal(data); err != nil {
 		return nil, err
